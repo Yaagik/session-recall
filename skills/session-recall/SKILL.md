@@ -18,7 +18,7 @@ If the user's message already answers a question this skill asks (privacy accept
 
 ## Rules that always apply
 
-1. Read tool history; never modify any tool's files or settings. Write only inside `docs/ai-history/`. Never commit. Never upload anything.
+1. Read tool history; never modify any tool's files or settings. Write only inside `docs/ai-history/`. Never commit. Everything stays on this computer.
    - **Never open credential or account files**, even though some sit next to session history. These include:
      - `~/.claude/.credentials.json`, `~/.claude.json`, the macOS Keychain;
      - `~/.codex/auth.json`;
@@ -26,7 +26,7 @@ If the user's message already answers a question this skill asks (privacy accept
      - `~/.local/share/opencode/auth.json`;
      - editors' `state.vscdb` and secret storage.
 
-     Read only the session paths named in the tool files. This skill makes no network requests of its own.
+     Read only the session paths named in the tool files.
 2. Apply the redaction rules (Step 9) to everything you write and to your replies.
 3. For an excluded session, the only thing ever written is its key `<tool-key>:<id>` in "Excluded sessions": no title, no content.
 4. Prefer your built-in file tools (glob/search/read) over shell commands. When a command is needed, use the form that matches **the shell your command tool actually runs**. On Windows, Claude Code's Bash tool runs Git Bash, so use the POSIX (`macOS / Linux`) form there. Use the `Windows PowerShell` form only when your tool runs PowerShell. If unsure, run `echo $0` or `$PSVersionTable` once to find out.
@@ -72,7 +72,7 @@ For each `--include` key: if it is in `EXCLUDED`, remove it from `EXCLUDED` (it 
 
 Tell the user:
 
-> session-recall will read your saved AI sessions for this project. The text of the sessions you choose will be sent to this agent's model provider to be summarized, and the summary will be written to `docs/ai-history/` in this repo. Nothing else is uploaded. Continue? (yes / no)
+> session-recall will read your saved AI sessions for this project. The text of the sessions you choose will be read by this agent's model provider to be summarized, and the summary will be written to `docs/ai-history/` in this repo. Nothing else leaves this computer. Continue? (yes / no)
 
 Wait for the answer unless the user already gave it. On "no", stop and write nothing.
 
