@@ -1,0 +1,28 @@
+schema_version: "1.1"
+name: old-sessions-retention
+tags: [robustness]
+execution:
+  max_turns: 40
+  timeout_seconds: 900
+  allowed_tools: [Read, Glob, Grep, Skill, Bash, Write, Edit]
+  prompt: |
+    I just installed session-recall. Use it to document this project's AI session history.
+    Arguments: --home ./fixture-home --all
+    I accept the privacy notice and approve the token estimate.
+context:
+  scaffold_script: scaffold.sh
+graders:
+  - name: pre-install-session-found
+    type: regex
+    target: { source: file, path: docs/ai-history/HISTORY.md }
+    pattern: 'claude-code:11111111-aaaa-4aaa-8aaa-000000000005'
+  - name: retention-warning
+    type: regex
+    pattern: 'cleanupPeriodDays'
+  - name: settings-not-touched
+    type: tool_used
+    tool: Edit
+    input_match: 'settings\.json'
+    min: 0
+    max: 0
+    arm: both

@@ -1,0 +1,21 @@
+{
+  "name": "session-recall",
+  "version": "0.1.0",
+  "description": "Summarize this project's AI coding-agent session history (Claude Code, Codex CLI, Gemini CLI, opencode, Aider, Cline, Roo Code) into Markdown in the repo, so it survives a laptop switch.",
+  "author": {
+    "name": "Yaagik Goel",
+    "url": "https://github.com/Yaagik"
+  },
+  "license": "MIT",
+  "keywords": [
+    "sessions",
+    "history",
+    "migration",
+    "claude-code",
+    "codex",
+    "gemini-cli",
+    "skills"
+  ],
+  "homepage": "https://github.com/Yaagik/session-recall",
+  "repository": "https://github.com/Yaagik/session-recall"
+}

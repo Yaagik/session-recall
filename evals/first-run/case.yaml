@@ -1,0 +1,68 @@
+schema_version: "1.1"
+name: first-run
+tags: [core]
+execution:
+  max_turns: 40
+  timeout_seconds: 900
+  allowed_tools: [Read, Glob, Grep, Skill, Bash, Write, Edit]
+  prompt: |
+    Use the session-recall skill to document this project's AI session history.
+    Arguments: --home ./fixture-home --all
+    I accept the privacy notice and approve the token estimate.
+context:
+  scaffold_script: scaffold.sh
+graders:
+  - name: skill-fired
+    type: tool_used
+    tool: Skill
+    input_match: '"skill"\s*:\s*"(?:[\w-]+:)?session-recall"'
+  - name: history-created
+    type: file_exists
+    path: docs/ai-history/HISTORY.md
+    exists: true
+  - name: runlog-created
+    type: file_exists
+    path: docs/ai-history/sessions/*.md
+    exists: true
+  - name: headings-in-order
+    type: regex
+    target: { source: file, path: docs/ai-history/HISTORY.md }
+    pattern: '## Context for the next agent[\s\S]*## Project overview & architecture[\s\S]*## Key decisions \(and why\)[\s\S]*## What''s been built[\s\S]*## Bugs fixed & gotchas learned[\s\S]*## Open TODOs / next steps[\s\S]*## Sessions covered[\s\S]*## Excluded sessions'
+  - name: covers-A
+    type: regex
+    target: { source: file, path: docs/ai-history/HISTORY.md }
+    pattern: 'claude-code:11111111-aaaa-4aaa-8aaa-000000000001'
+  - name: covers-B
+    type: regex
+    target: { source: file, path: docs/ai-history/HISTORY.md }
+    pattern: 'claude-code:11111111-aaaa-4aaa-8aaa-000000000002'
+  - name: subagent-not-a-session
+    type: regex
+    target: { source: file, path: docs/ai-history/HISTORY.md }
+    pattern: '\| claude-code:[^ |]+ \|'
+    match: 'count:2'
+  - name: subagent-id-not-listed
+    type: regex
+    target: { source: file, path: docs/ai-history/HISTORY.md }
+    pattern: 'agent-sub1'
+    match: not_contains
+  - name: tool-output-never-loaded
+    type: regex
+    target: trace
+    pattern: 'TOOL-OUTPUT TOOL-OUTPUT TOOL-OUTPUT|internal reasoning that must not|WRITE-BODY-MARKER WRITE-BODY-MARKER'
+    match: not_contains
+  - name: no-tool-output-or-thinking
+    type: regex
+    target: { source: file, path: docs/ai-history/HISTORY.md }
+    pattern: 'TOOL-OUTPUT|internal reasoning that must not'
+    match: not_contains
+  - name: content-quality
+    type: llm
+    focus: { source: file, path: docs/ai-history/HISTORY.md }
+    criteria: |
+      PASS only if all hold:
+      - "Key decisions" mentions choosing Postgres over Mongo with the reason (joins / JSON queries).
+      - "Bugs fixed & gotchas learned" mentions the login redirect loop and that Stripe signature checks need the raw request body.
+      - "Open TODOs / next steps" includes a regression test for the missing-cookie case and handling refunds.
+      - "Context for the next agent" is 5-10 lines describing the current state and what to do next.
+      FAIL otherwise.

@@ -1,0 +1,33 @@
+schema_version: "1.1"
+name: token-estimate
+tags: [privacy]
+execution:
+  max_turns: 25
+  timeout_seconds: 600
+  allowed_tools: [Read, Glob, Grep, Skill, Bash, Write, Edit]
+  prompt: |
+    Use the session-recall skill to document this project's AI session history.
+    Arguments: --home ./fixture-home --all
+    I accept the privacy notice.
+context:
+  scaffold_script: scaffold.sh
+graders:
+  - name: shows-estimate
+    type: regex
+    pattern: 'Estimated token use[^\n]*~[\d,]+\s*input[^\n]*~[\d,]+\s*output'
+    flags: i
+  - name: list-shown-with-all
+    type: regex
+    pattern: 'Fix login redirect bug[^\n]*~[\d,]+'
+  - name: asks-to-proceed
+    type: regex
+    pattern: 'Proceed\?'
+  - name: nothing-written-before-approval
+    type: file_exists
+    path: 'docs/ai-history/**'
+    exists: false
+  - name: content-not-loaded-before-approval
+    type: regex
+    target: trace
+    pattern: 'Fixed it in src/auth/login\.ts|TOOL-OUTPUT TOOL-OUTPUT TOOL-OUTPUT|OTHERPROJ-'
+    match: not_contains

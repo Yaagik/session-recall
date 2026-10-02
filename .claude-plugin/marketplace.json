@@ -1,0 +1,20 @@
+{
+  "name": "session-recall",
+  "description": "Marketplace for the session-recall plugin",
+  "owner": {
+    "name": "Yaagik Goel",
+    "url": "https://github.com/Yaagik"
+  },
+  "plugins": [
+    {
+      "name": "session-recall",
+      "description": "Summarize this project's AI coding-agent session history into Markdown in the repo.",
+      "version": "0.1.0",
+      "source": "./",
+      "author": {
+        "name": "Yaagik Goel"
+      },
+      "homepage": "https://github.com/Yaagik/session-recall"
+    }
+  ]
+}
