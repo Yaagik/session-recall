@@ -97,7 +97,7 @@ Works on **macOS** and **Windows**. Git worktrees, including Superset and Conduc
 
 ## Privacy and cost
 
-- **Nothing is uploaded by this skill.** It only reads files on your computer and writes Markdown into your project.
+- **The skill itself keeps everything on your computer.** It only reads files there and writes Markdown into your project.
 - **Your AI agent's provider sees the text of the sessions you choose,** because the agent summarizes them. For example, running it in Codex sends that text to OpenAI. You're asked once per project before anything is read.
 - **Tokens are kept low.**
   - Before your "yes", only titles, dates and sizes are read.
@@ -110,15 +110,12 @@ Works on **macOS** and **Windows**. Git worktrees, including Superset and Conduc
 
 ## For contributors
 
-```bash
-claude plugin validate .claude-plugin/plugin.json      # check the plugin files
-python3 -m unittest tests/test_commands.py -v          # free: every shell command, bash + PowerShell (set PWSH=/path/to/pwsh)
-bash tests/e2e.sh                                      # real run with real git (~$0.50 on your Claude account)
-claude plugin eval . --scaffold --trust-plugin --allow-tools Bash Write Edit --runs 1 --no-publish   # 20 behaviour tests (~$6)
-```
+The plugin itself is everything on the `main` branch. The tests live on the **`dev` branch** of this repo:
 
-- **How it's built:** the skill is plain instructions in `skills/session-recall/SKILL.md`, with one reference file per tool in `skills/session-recall/tools/`.
-- **How the tests work:** behaviour tests live in `evals/`. Each builds fake tool history with `evals/_fixtures/make_home.py` and runs the skill on it.
-- **Inspecting a real session file:** `python3 evals/_fixtures/shape.py <file>` shows its structure without showing its content.
+- `evals/`: 20 behaviour tests that run the skill on fake tool history.
+- `tests/test_commands.py`: runs every command the skill uses, in bash and PowerShell.
+- `tests/e2e.sh`: one real run with real git.
+
+To contribute, check out `dev`, run the tests described in its README section, and open a pull request against `dev`.
 
 MIT License.
