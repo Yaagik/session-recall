@@ -15,7 +15,7 @@ check_not() { local name=$1; shift; if "$@"; then echo "  FAIL $name"; fail=1; e
 
 cd "$WS"
 git init -q -b main && git config user.email t@example.com && git config user.name t
-git remote add origin https://github.com/example/demo-app.git
+git remote add origin ../origin/demo-app.git
 echo "# demo-app" > README.md && git add README.md && git commit -qm init
 echo "fixture-home/" >> .git/info/exclude
 git worktree add -q "$WS-wt" -b feature

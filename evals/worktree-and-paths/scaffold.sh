@@ -5,7 +5,7 @@ MK="python3 $HERE/../_fixtures/make_home.py"
 WS="$(pwd -P)"
 WS_LOGICAL="${WS#/private}"   # macOS: /tmp/... is the logical form of /private/tmp/...
 git init -q -b main && git config user.email t@example.com && git config user.name t
-git remote add origin https://github.com/example/demo-app.git
+git remote add origin ../origin/demo-app.git
 mkdir -p packages/api && echo "# demo-app" > README.md && echo "api" > packages/api/README.md
 git add . && git commit -qm init
 echo "fixture-home/" >> .git/info/exclude

@@ -3,7 +3,7 @@ set -euo pipefail
 HERE="$(cd "$(dirname "$0")" && pwd)"
 MK="python3 $HERE/../_fixtures/make_home.py"
 git init -q -b main && git config user.email t@example.com && git config user.name t
-git remote add origin https://github.com/example/demo-app.git
+git remote add origin ../origin/demo-app.git
 echo "# demo-app" > README.md && git add README.md && git commit -qm init
 echo "old-laptop-home/" >> .git/info/exclude
 # A backup of the OLD laptop's home: the project lived at a different path under another username

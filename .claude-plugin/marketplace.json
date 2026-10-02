@@ -9,7 +9,7 @@
     {
       "name": "session-recall",
       "description": "Summarize this project's AI coding-agent session history into Markdown in the repo.",
-      "version": "0.1.1",
+      "version": "0.1.2",
       "source": "./",
       "author": {
         "name": "Yaagik Goel"
