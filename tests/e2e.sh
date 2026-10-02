@@ -10,7 +10,8 @@ MK="python3 $REPO/evals/_fixtures/make_home.py"
 T="$(mktemp -d)"; trap 'rm -rf "$T" "$T-wt"' EXIT
 WS="$(cd "$T" && pwd -P)"
 fail=0
-check() { if eval "$2"; then echo "  ok   $1"; else echo "  FAIL $1"; fail=1; fi; }
+check()     { local name=$1; shift; if "$@"; then echo "  ok   $name"; else echo "  FAIL $name"; fail=1; fi; }
+check_not() { local name=$1; shift; if "$@"; then echo "  FAIL $name"; fail=1; else echo "  ok   $name"; fi; }
 
 cd "$WS"
 git init -q -b main && git config user.email t@example.com && git config user.name t
@@ -32,14 +33,15 @@ OUT="$(claude -p "Use the session-recall skill to document this project's AI ses
 echo "$OUT" | tail -15 | sed 's/^/    | /'
 
 H="$WS/docs/ai-history/HISTORY.md"
-check "HISTORY.md written"                     "[ -f '$H' ]"
-check "run log written"                        "ls '$WS'/docs/ai-history/sessions/*.md >/dev/null 2>&1"
-check "main-repo session documented"           "grep -q 'claude-code:e2e00000-0000-4000-8000-000000000001' '$H'"
-check "worktree session found via real git"    "grep -q 'claude-code:e2e00000-0000-4000-8000-000000000002' '$H'"
-check "codex session documented"               "grep -q 'codex:e2e-codex-1' '$H'"
-check "other project not documented"           "! grep -q -E 'e2e-codex-other|OTHERPROJ' '$WS'/docs/ai-history -r"
-check "secret not written"                     "! grep -rq 'sk-test-REDACT-ME-0000' '$WS/docs/ai-history'"
-check "secret not in reply"                    "! echo \"\$OUT\" | grep -q 'sk-test-REDACT-ME-0000'"
-check "estimate reported"                      "echo \"\$OUT\" | grep -q -E 'Tokens: estimated ~[0-9,]+ input'"
-check "nothing written outside docs/ai-history" "[ -z \"\$(git -C '$WS' status --porcelain --untracked-files=all | grep -v -E '^\\?\\? docs/ai-history/')\" ]"
+STRAY="$(git -C "$WS" status --porcelain --untracked-files=all | grep -v -E '^\?\? docs/ai-history/' || true)"
+check     "HISTORY.md written"                      test -f "$H"
+check     "run log written"                         compgen -G "$WS/docs/ai-history/sessions/*.md"
+check     "main-repo session documented"            grep -q 'claude-code:e2e00000-0000-4000-8000-000000000001' "$H"
+check     "worktree session found via real git"     grep -q 'claude-code:e2e00000-0000-4000-8000-000000000002' "$H"
+check     "codex session documented"                grep -q 'codex:e2e-codex-1' "$H"
+check_not "other project not documented"            grep -rqE 'e2e-codex-other|OTHERPROJ' "$WS/docs/ai-history"
+check_not "secret not written"                      grep -rq 'sk-test-REDACT-ME-0000' "$WS/docs/ai-history"
+check_not "secret not in reply"                     grep -q 'sk-test-REDACT-ME-0000' <<<"$OUT"
+check     "estimate reported"                       grep -qE 'Tokens: estimated ~[0-9,]+ input' <<<"$OUT"
+check     "nothing written outside docs/ai-history" test -z "$STRAY"
 exit $fail

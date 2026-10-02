@@ -19,6 +19,14 @@ If the user's message already answers a question this skill asks (privacy accept
 ## Rules that always apply
 
 1. Read tool history; never modify any tool's files or settings. Write only inside `docs/ai-history/`. Never commit. Never upload anything.
+   - **Never open credential or account files**, even though some sit next to session history. These include:
+     - `~/.claude/.credentials.json`, `~/.claude.json`, the macOS Keychain;
+     - `~/.codex/auth.json`;
+     - `~/.gemini/oauth_creds.json`, `~/.gemini/google_accounts.json`, `.env` files;
+     - `~/.local/share/opencode/auth.json`;
+     - editors' `state.vscdb` and secret storage.
+
+     Read only the session paths named in the tool files. This skill makes no network requests of its own.
 2. Apply the redaction rules (Step 9) to everything you write and to your replies.
 3. For an excluded session, the only thing ever written is its key `<tool-key>:<id>` in "Excluded sessions": no title, no content.
 4. Prefer your built-in file tools (glob/search/read) over shell commands. When a command is needed, use the form that matches **the shell your command tool actually runs**. On Windows, Claude Code's Bash tool runs Git Bash, so use the POSIX (`macOS / Linux`) form there. Use the `Windows PowerShell` form only when your tool runs PowerShell. If unsure, run `echo $0` or `$PSVersionTable` once to find out.
