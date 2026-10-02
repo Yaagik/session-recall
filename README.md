@@ -97,13 +97,16 @@ Works on **macOS** and **Windows**. Git worktrees, including Superset and Conduc
 
 ## Privacy and cost
 
+**[Privacy](PRIVACY.md):** read the full privacy policy. In short:
+
+
 - **The skill itself keeps everything on your computer.** It only reads files there and writes Markdown into your project.
 - **Your AI agent's provider sees the text of the sessions you choose,** because the agent summarizes them. For example, running it in Codex sends that text to OpenAI. You're asked once per project before anything is read.
 - **Tokens are kept low.**
   - Before your "yes", only titles, dates and sizes are read.
   - After it, only your prompts and the agent's replies are read. Tool output, hidden reasoning, file contents and other projects' sessions are left out.
   - On a real session this was about **94% fewer tokens** than reading the whole file.
-- **Secrets are removed.** API keys, tokens, passwords, private keys and `.env` values are written as `[REDACTED]`.
+- **Secrets and personal data are removed.** API keys, tokens, passwords, private keys and `.env` values are written as `[REDACTED]`. So are names, emails, phone numbers and addresses; people are referred to by role instead.
 - **It never commits for you.** Look over `docs/ai-history/` before committing, especially in public repos.
 
 ---

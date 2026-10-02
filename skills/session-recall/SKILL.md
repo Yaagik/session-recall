@@ -27,7 +27,7 @@ If the user's message already answers a question this skill asks (privacy accept
      - editors' `state.vscdb` and secret storage.
 
      Read only the session paths named in the tool files.
-2. Apply the redaction rules (Step 9) to everything you write and to your replies.
+2. Apply the redaction rules (Step 9) to everything you write and to your replies. They cover secrets and personal data (names, emails, phone numbers, addresses).
 3. For an excluded session, the only thing ever written is its key `<tool-key>:<id>` in "Excluded sessions": no title, no content.
 4. Prefer your built-in file tools (glob/search/read) over shell commands. When a command is needed, use the form that matches **the shell your command tool actually runs**. On Windows, Claude Code's Bash tool runs Git Bash, so use the POSIX (`macOS / Linux`) form there. Use the `Windows PowerShell` form only when your tool runs PowerShell. If unsure, run `echo $0` or `$PSVersionTable` once to find out.
 5. Path comparison: compare paths after resolving symlinks (macOS `/var/...` and `/private/var/...` are the same folder). On Windows, compare case-insensitively and treat `\` and `/` as equal. Paths read from JSON have their backslashes doubled (`C:\\Users\\me\\app`), so un-double them before comparing. Keep both the as-given and the resolved form of every known path, and try both when matching.
@@ -172,6 +172,14 @@ Never write any of these. Write `[REDACTED]` instead:
 - private-key blocks
 - connection strings that contain credentials
 - the values in `.env` files
+
+**Never write personal data either:**
+- names of people
+- email addresses
+- phone numbers
+- postal addresses
+
+Refer to people by role instead, such as "the user", "a teammate" or "the client", or write `[REDACTED]`. This also applies to the HISTORY.md title, the run log and your replies.
 
 Do not copy long verbatim code or file contents: summarize, and name file paths. When in doubt, leave it out.
 
